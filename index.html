@@ -371,6 +371,27 @@ header{scroll-margin-top:0}
 .acc-dl{margin:0;border-top:1px solid var(--line)}.acc-dl div{display:grid;grid-template-columns:130px 1fr;gap:12px;padding:11px 0;border-bottom:1px solid var(--line);font-size:.93rem}
 .acc-dl dt{font-weight:600}.acc-dl dd{margin:0;color:var(--muted)}.acc-act{display:flex;gap:10px;flex-wrap:wrap}
 .account[hidden]{display:none}
+
+/* ---- onboarding + dashboards ---- */
+.rolepick{display:grid;grid-template-columns:1fr 1fr;gap:20px;max-width:760px}
+.rp{text-align:left;font:inherit;color:var(--fg);background:var(--surface);border:1px solid var(--line);padding:24px;display:flex;flex-direction:column;gap:8px;cursor:pointer;min-height:44px;transition:border-color .2s,box-shadow .2s}
+.rp:hover{border-color:var(--rule);box-shadow:4px 4px 0 var(--line)}
+.rp[aria-pressed="true"]{border-color:var(--rule);box-shadow:inset 4px 0 0 var(--cta),4px 4px 0 var(--line)}
+.rp p{color:var(--muted);font-size:.95rem}
+.ob-act{margin-top:24px;display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.dgrid{display:grid;grid-template-columns:minmax(0,1fr);gap:28px}
+.dform{max-width:none}
+.dform .row{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.dbar{display:grid;grid-template-columns:2fr 1fr 1fr;gap:12px;border:1px solid var(--rule);padding:16px;background:var(--surface);margin-bottom:16px}
+.dh{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:14px}
+.dapps{border:1px solid var(--line);background:var(--bg);padding:16px 20px}
+.dapps ul{list-style:none;margin:8px 0 0;padding:0;display:flex;flex-direction:column;gap:6px;font-size:.93rem}
+.dapps li{display:flex;justify-content:space-between;gap:12px}
+.dapps[hidden]{display:none}
+.jbadge.x{border-color:var(--muted);color:var(--muted)}
+.btn.danger{border-color:#B42318;color:#B42318}
+@media (max-width:960px){.dform .row{grid-template-columns:1fr 1fr}.dbar{grid-template-columns:1fr 1fr}}
+@media (max-width:640px){.rolepick,.dform .row,.dbar{grid-template-columns:1fr}}
 </style>
 
 <a class="skip" href="#top" onclick="event.preventDefault();var m=document.getElementById('top');m.setAttribute('tabindex','-1');m.focus()">Skip to main content</a>
@@ -665,31 +686,48 @@ header{scroll-margin-top:0}
   <div class="pagehead"><div class="wrap">
     <span class="label" style="padding-top:8px">Get started</span>
     <div><h1>Log in or create your account.</h1>
-    <p class="lead">Freelancers and employers use the same page. Choose your side and continue.</p></div>
+    <p class="lead">Sign in with Google. First time here? You will choose Freelancer or Employer next.</p></div>
   </div></div>
   <div class="wrap sect">
     <div class="side"><span class="label">Account</span></div>
     <div class="main">
       <form class="form" id="auth" novalidate>
-        <div class="switch" role="group" aria-label="Account type">
-          <button type="button" data-r="Freelancer" aria-pressed="true">Freelancer</button>
-          <button type="button" data-r="Employer" aria-pressed="false">Employer</button>
-        </div>
         <button type="button" class="gbtn" id="gbtn"><svg class="gl" viewBox="0 0 48 48" width="20" height="20" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg><span>Continue with Google</span></button>
         <div class="or" aria-hidden="true"><span>or use email</span></div>
         <label class="field" for="email">Email<input id="email" type="email" autocomplete="email" placeholder="you@example.com"></label>
         <label class="field" for="pw">Password<input id="pw" type="password" autocomplete="current-password" placeholder="At least 8 characters"></label>
         <button class="btn primary" type="submit" style="justify-content:center">Continue</button>
-        <p class="msg" id="msg" role="status" aria-live="polite">Layout only. Sign-in connects when the database is added.</p>
+        <p class="msg" id="msg" role="status" aria-live="polite">Sign in with Google to continue.</p>
       </form>
       <div class="form account" id="account" hidden>
         <div class="acc-top"><span class="acc-av" id="acc-av"></span><div><h3 id="acc-name"></h3><p class="msg" id="acc-email"></p></div></div>
         <dl class="acc-dl"><div><dt>Account type</dt><dd id="acc-role"></dd></div><div><dt>Signed in with</dt><dd>Google</dd></div></dl>
-        <div class="acc-act"><a class="btn primary" id="acc-go" href="#jobs">Browse jobs</a><button type="button" class="btn" id="acc-out">Log out</button></div>
+        <div class="acc-act"><a class="btn primary" id="acc-go" href="#dashboard">Go to dashboard</a><button type="button" class="btn" id="acc-out">Log out</button></div>
       </div>
     </div>
   </div>
 </div>
+
+<!-- ONBOARDING: first login only -->
+<div class="page" id="pg-onboard" hidden>
+  <div class="pagehead"><div class="wrap">
+    <span class="label" style="padding-top:8px">Welcome</span>
+    <div><h1>How will you use Crewlio?</h1><p class="lead">Pick your side once. We save it to your account and set up the right dashboard for you.</p></div>
+  </div></div>
+  <div class="wrap sect">
+    <div class="side"><span class="label">Choose your side</span></div>
+    <div class="main">
+      <div class="rolepick" role="group" aria-label="Account type">
+        <button type="button" class="rp" data-r="freelancer" aria-pressed="false"><span class="label">Freelancer</span><h3>I want to get hired</h3><p>See every open job, apply in one click and track where you applied.</p></button>
+        <button type="button" class="rp" data-r="employer" aria-pressed="false"><span class="label">Employer</span><h3>I'm hiring</h3><p>Post jobs, see who applied and manage your listings.</p></button>
+      </div>
+      <div class="ob-act"><button type="button" class="btn primary" id="ob-go" disabled>Continue</button><p class="msg" id="ob-msg" role="status" aria-live="polite"></p></div>
+    </div>
+  </div>
+</div>
+
+<!-- DASHBOARD: Freelancer or Employer, rendered by script -->
+<div class="page" id="pg-dashboard" hidden><div id="dash"></div></div>
 
 </main>
 
@@ -704,7 +742,7 @@ header{scroll-margin-top:0}
 <script>
 (function(){
   /* page routing by URL hash */
-  var pages=['home','resume','find-a-va','jobs','how-it-works','fees','login'];
+  var pages=['home','resume','find-a-va','jobs','how-it-works','fees','login','onboard','dashboard'];
   var links=document.querySelectorAll('#navlinks a');
   function route(){
     var h=(location.hash||'').replace('#','');
@@ -938,29 +976,31 @@ window.addEventListener('load',function(){
 </script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script>
-/* Supabase Auth with Google. The publishable key is designed to be public; never put a secret or service_role key here.
-   Supabase dashboard setup: Authentication > Sign In / Providers > Google (enable, add Google client ID and secret),
-   and Authentication > URL Configuration > add this site's address to Redirect URLs. */
+/* Supabase auth + roles + dashboards.
+   Tables (already in your project, RLS on): crewlio_profiles (id, role), crewlio_jobs, crewlio_applications.
+   First login: no crewlio_profiles row -> #onboard -> user picks Freelancer or Employer -> row inserted -> #dashboard. */
 (function(){
   var SB_URL='https://acxrobzulaswsubfoghg.supabase.co',SB_KEY='sb_publishable_3Ehkqe8QtPVJQoh4FCZIVg_m2f8SOTD';
   var $=function(id){return document.getElementById(id)};
-  var btn=$('gbtn'),msg=$('msg'),sb=null,cta=document.querySelectorAll('.nav-cta a');
+  function h(t,c,x){var e=document.createElement(t);if(c)e.className=c;if(x!=null)e.textContent=x;return e}
+  var CATS=['Admin support','Customer support','Web & SEO','Social media','Bookkeeping','Sales & CRM'];
+  var btn=$('gbtn'),msg=$('msg'),sb=null,user=null,profile=null,ready=false,pick='',cta=document.querySelectorAll('.nav-cta a');
   function say(t,ok){msg.textContent=t;msg.className='msg'+(ok?' ok':'')}
-  function role(){var b=document.querySelector('#auth .switch [aria-pressed="true"]');return b?b.getAttribute('data-r'):'Freelancer'}
   if(window.supabase&&supabase.createClient){
     sb=supabase.createClient(SB_URL,SB_KEY,{auth:{flowType:'pkce',detectSessionInUrl:true,persistSession:true,autoRefreshToken:true}});
   }
-  /* reflect signed-in state across the page */
-  function ui(session){
-    var u=session&&session.user,logIn=cta[0],sign=cta[1];
-    $('auth').hidden=!!u;$('account').hidden=!u;
-    if(u){
-      var m=u.user_metadata||{},name=m.full_name||m.name||u.email||'Your account';
-      $('acc-name').textContent=name;$('acc-email').textContent=u.email||'';$('acc-role').textContent=m.role||'Freelancer';
+  function uname(){var m=(user&&user.user_metadata)||{};return (profile&&profile.full_name)||m.full_name||m.name||(user&&user.email)||'Your account'}
+  function roleLabel(){return profile?(profile.role==='employer'?'Employer':'Freelancer'):'Not chosen yet'}
+  function ui(){
+    var logIn=cta[0],sign=cta[1];
+    $('auth').hidden=!!user;$('account').hidden=!user;
+    if(user){
+      var m=user.user_metadata||{},name=uname();
+      $('acc-name').textContent=name;$('acc-email').textContent=user.email||'';$('acc-role').textContent=roleLabel();
       var av=$('acc-av');av.textContent='';
       if(m.avatar_url){var im=new Image();im.src=m.avatar_url;im.alt='';im.referrerPolicy='no-referrer';im.onerror=function(){av.textContent=name[0].toUpperCase()};av.appendChild(im)}else av.textContent=name[0].toUpperCase();
-      $('acc-go').textContent=(m.role==='Employer')?'Find a VA':'Browse jobs';$('acc-go').setAttribute('href',(m.role==='Employer')?'#find-a-va':'#jobs');
-      if(logIn){logIn.textContent=name.split(' ')[0];logIn.setAttribute('href','#login')}
+      $('acc-go').textContent=profile?'Go to dashboard':'Choose your account type';$('acc-go').setAttribute('href',profile?'#dashboard':'#onboard');
+      if(logIn){logIn.textContent='Dashboard';logIn.setAttribute('href',profile?'#dashboard':'#onboard')}
       if(sign){sign.textContent='Log out';sign.setAttribute('href','#login');sign.onclick=function(e){e.preventDefault();out()}}
     }else{
       if(logIn){logIn.textContent='Log in';logIn.setAttribute('href','#login')}
@@ -969,28 +1009,171 @@ window.addEventListener('load',function(){
   }
   function out(){if(sb)sb.auth.signOut()}
   $('acc-out').addEventListener('click',out);
-  if(sb){
-    /* handle the return from Google: error in the URL, or a ?code that supabase-js exchanges for a session */
-    var q=new URLSearchParams(location.search),err=q.get('error_description');
-    sb.auth.getSession().then(function(r){
-      ui(r.data.session);
-      if(q.get('code')||err){history.replaceState(null,'',location.pathname+(location.hash||''));if(err){location.hash='#login';say(err)}}
-    });
-    sb.auth.onAuthStateChange(function(ev,session){
-      ui(session);
-      if(ev==='SIGNED_IN'&&session){
-        var want=localStorage.getItem('crewlio_role');
-        if(want&&!(session.user.user_metadata||{}).role){setTimeout(function(){sb.auth.updateUser({data:{role:want}}).then(function(x){if(x.data&&x.data.user)ui({user:x.data.user})})},0)}
-        try{localStorage.removeItem('crewlio_role')}catch(e){}
-        if(!location.hash||location.hash==='#login'||location.hash==='#home')location.hash='#login';
-      }
+
+  /* ---------- routing guard ---------- */
+  function gate(){
+    if(!ready)return;
+    var hh=location.hash.replace('#','');
+    if(hh==='dashboard'||hh==='onboard'){
+      if(!user){location.hash='#login';return}
+      if(hh==='dashboard'){if(!profile){location.hash='#onboard';return}renderDash()}
+      if(hh==='onboard'&&profile){location.hash='#dashboard'}
+    }
+  }
+  window.addEventListener('hashchange',gate);
+  function setSession(session,ev){
+    user=session&&session.user||null;
+    if(!user){profile=null;ready=true;ui();gate();return}
+    sb.from('crewlio_profiles').select('*').eq('id',user.id).maybeSingle().then(function(r){
+      profile=r.data||null;ready=true;ui();
+      var hh=location.hash.replace('#','');
+      if(ev==='SIGNED_IN'&&(hh===''||hh==='login'||hh==='home'))location.hash=profile?'#dashboard':'#onboard';
+      else gate();
     });
   }
+  if(sb){
+    var q=new URLSearchParams(location.search),err=q.get('error_description');
+    sb.auth.getSession().then(function(r){
+      if(q.get('code')||err){history.replaceState(null,'',location.pathname+(location.hash||''));if(err){location.hash='#login';say(err)}}
+    });
+    sb.auth.onAuthStateChange(function(ev,session){setTimeout(function(){setSession(session,ev)},0)});
+  }else{ready=true}
+
+  /* ---------- first-time role choice ---------- */
+  var rps=document.querySelectorAll('.rp'),go=$('ob-go'),om=$('ob-msg');
+  rps.forEach(function(b){b.addEventListener('click',function(){
+    pick=b.getAttribute('data-r');rps.forEach(function(x){x.setAttribute('aria-pressed',String(x===b))});go.disabled=false;om.textContent=''})});
+  go.addEventListener('click',function(){
+    if(!user||!pick)return;
+    go.disabled=true;om.className='msg';om.textContent='Saving\u2026';
+    var m=user.user_metadata||{};
+    sb.from('crewlio_profiles').insert({id:user.id,role:pick,full_name:m.full_name||m.name||null,avatar_url:m.avatar_url||null}).select().single().then(function(r){
+      if(r.error&&r.error.code!=='23505'){go.disabled=false;om.textContent='Could not save: '+r.error.message;return}
+      sb.from('crewlio_profiles').select('*').eq('id',user.id).maybeSingle().then(function(p){
+        profile=p.data;ui();location.hash='#dashboard'});
+    });
+  });
+
+  /* ---------- dashboards ---------- */
+  var D={q:'',cat:'',type:''};
+  function ago(d){var n=Math.floor((Date.now()-new Date(d))/864e5);return n<1?'today':n+(n===1?' day':' days')+' ago'}
+  function stat(box,rows){box.textContent='';rows.forEach(function(r){var d=h('div');d.appendChild(h('b',null,r[0]));d.appendChild(h('span',null,r[1]));box.appendChild(d)})}
+  function head(label,title,lead){
+    var p=h('div','pagehead'),w=h('div','wrap'),s=h('span','label',label),d=h('div');s.style.paddingTop='8px';
+    d.appendChild(h('h1',null,title));d.appendChild(h('p','lead',lead));w.appendChild(s);w.appendChild(d);p.appendChild(w);return p}
+  function sect(side){var w=h('div','wrap sect'),s=h('div','side'),m=h('div','main');s.appendChild(h('span','label',side));w.appendChild(s);w.appendChild(m);return [w,m]}
+  function field(label,el){var l=h('label','field',label);l.appendChild(el);return l}
+  function inp(type,ph,id,extra){var i=h('input');i.type=type;if(ph)i.placeholder=ph;i.id=id;if(extra)Object.keys(extra).forEach(function(k){i.setAttribute(k,extra[k])});return i}
+  function sel(id,opts,any){var s=h('select');s.id=id;if(any){var o=h('option',null,any);o.value='';s.appendChild(o)}opts.forEach(function(x){s.appendChild(h('option',null,x))});return s}
+  function card(j,extra){
+    var r=h('article','jb'),hd=h('div','jhead'),m=h('div'),t=h('h3',null,j.title),pb=h('div','jpaybox');
+    if((Date.now()-new Date(j.created_at))/864e5<=1&&j.status==='open')t.appendChild(h('span','jbadge g','New'));
+    if(j.status==='closed')t.appendChild(h('span','jbadge x','Closed'));
+    hd.appendChild(h('div','jav',j.company.split(' ').slice(0,2).map(function(w){return w[0]}).join('').toUpperCase()));
+    m.appendChild(t);m.appendChild(h('p','jco',j.company+'  \u00b7  '+j.category));hd.appendChild(m);
+    pb.appendChild(h('div','jpay','$'+Number(j.pay_min)+'\u2013'+Number(j.pay_max)+' / hr'));pb.appendChild(h('div','jtype',j.job_type));hd.appendChild(pb);r.appendChild(hd);
+    var f=h('div','jfacts');if(j.hours_per_week)f.appendChild(h('span',null,j.hours_per_week+' hours per week'));f.appendChild(h('span',null,'Remote'+(j.timezone?' \u00b7 '+j.timezone:'')));f.appendChild(h('span',null,j.level));r.appendChild(f);
+    r.appendChild(h('p','desc',j.description));
+    if(j.tags&&j.tags.length){var ul=h('ul','jtags');j.tags.forEach(function(x){ul.appendChild(h('li',null,x))});r.appendChild(ul)}
+    var ft=h('div','jfoot');ft.appendChild(h('span','meta','Posted '+ago(j.created_at)+(extra.meta?'  \u00b7  '+extra.meta:'')));
+    var ac=h('div','jacts');extra.acts.forEach(function(a){ac.appendChild(a)});ft.appendChild(ac);r.appendChild(ft);
+    if(extra.after)r.appendChild(extra.after);return r}
+  function renderDash(){
+    var root=$('dash');root.textContent='';
+    if(profile.role==='employer')employerDash(root);else freelancerDash(root);
+  }
+
+  /* FREELANCER: all open jobs + apply */
+  function freelancerDash(root){
+    root.appendChild(head('Freelancer dashboard','Welcome, '+uname().split(' ')[0]+'.','Every job that is hiring right now. Apply with your Crewlio profile.'));
+    var S=sect('Jobs hiring'),w=S[0],m=S[1],stats=h('div','jstats'),bar=h('form','dbar'),count=h('p','label count','Loading\u2026'),list=h('div','jlist');
+    bar.onsubmit=function(){return false};
+    var iq=inp('search','Title, tool or keyword','dq'),ic=sel('dc',CATS,'All categories'),it=sel('dt',['Full time','Part time','Project based'],'Any type');
+    bar.appendChild(field('Search',iq));bar.appendChild(field('Category',ic));bar.appendChild(field('Job type',it));
+    m.appendChild(stats);m.appendChild(bar);m.appendChild(count);m.appendChild(list);root.appendChild(w);
+    var jobs=[],applied={};
+    function draw(){
+      var q=iq.value.trim().toLowerCase(),c=ic.value,t=it.value;
+      var rows=jobs.filter(function(j){return (!q||(j.title+' '+j.company+' '+j.description+' '+(j.tags||[]).join(' ')).toLowerCase().indexOf(q)>-1)&&(!c||j.category===c)&&(!t||j.job_type===t)});
+      list.textContent='';count.textContent=rows.length+(rows.length===1?' job':' jobs');
+      if(!jobs.length){var e=h('div','jempty');e.appendChild(h('h3',null,'No jobs are open yet'));e.appendChild(h('p',null,'When employers post jobs they will show up here.'));list.appendChild(e);return}
+      if(!rows.length){var e2=h('div','jempty');e2.appendChild(h('h3',null,'No jobs match your filters'));list.appendChild(e2);return}
+      rows.forEach(function(j){
+        var ap=h('button','btn primary sm',applied[j.id]?'Applied':'Apply');ap.type='button';ap.disabled=!!applied[j.id];ap.setAttribute('aria-label','Apply for '+j.title);
+        ap.addEventListener('click',function(){ap.disabled=true;ap.textContent='Applying\u2026';
+          sb.from('crewlio_applications').insert({job_id:j.id}).then(function(r){
+            if(r.error&&r.error.code!=='23505'){ap.disabled=false;ap.textContent='Apply';alert('Could not apply: '+r.error.message);return}
+            applied[j.id]=1;stat(stats,sr());draw()})});
+        list.appendChild(card(j,{acts:[ap]}))})}
+    function sr(){return [[jobs.length,'Open jobs'],[Object.keys(applied).length,'Jobs you applied to'],[jobs.filter(function(j){return (Date.now()-new Date(j.created_at))/864e5<=3}).length,'New in the last 3 days']]}
+    [iq,ic,it].forEach(function(x){x.addEventListener('input',draw)});
+    Promise.all([sb.from('crewlio_jobs').select('*').eq('status','open').order('created_at',{ascending:false}),sb.from('crewlio_applications').select('job_id')]).then(function(r){
+      if(r[0].error){count.textContent='Could not load jobs: '+r[0].error.message;return}
+      jobs=r[0].data||[];(r[1].data||[]).forEach(function(a){applied[a.job_id]=1});stat(stats,sr());draw()});
+  }
+
+  /* EMPLOYER: post jobs, see applicants, close/delete */
+  function employerDash(root){
+    root.appendChild(head('Employer dashboard','Welcome, '+uname().split(' ')[0]+'.','Post a job, see who applied and manage your listings.'));
+    var A=sect('Post a job'),F=h('form','form dform'),fm=h('p','msg','');F.noValidate=true;
+    var ti=inp('text','Customer support agent','pj-t'),co=inp('text','Company name','pj-c'),ca=sel('pj-cat',CATS),ty=sel('pj-ty',['Full time','Part time','Project based']),lv=sel('pj-lv',['Entry level','Mid level','Experienced']),
+        hr=inp('number','40','pj-h',{min:1,max:80}),tz=inp('text','Flexible hours','pj-tz'),p1=inp('number','5','pj-a',{min:0,step:'0.5'}),p2=inp('number','8','pj-b',{min:0,step:'0.5'}),
+        tg=inp('text','Zendesk, Email, Chat','pj-tg'),ds=h('textarea');ds.id='pj-d';ds.placeholder='What the person will do and what you look for (10 to 2000 characters).';
+    var r1=h('div','row'),r2=h('div','row'),r3=h('div','row');
+    r1.appendChild(field('Job title',ti));r1.appendChild(field('Company',co));r1.appendChild(field('Category',ca));
+    r2.appendChild(field('Job type',ty));r2.appendChild(field('Experience',lv));r2.appendChild(field('Hours per week',hr));
+    r3.appendChild(field('Pay from ($/hr)',p1));r3.appendChild(field('Pay up to ($/hr)',p2));r3.appendChild(field('Timezone',tz));
+    var pb=h('button','btn primary','Post job');pb.type='submit';
+    [r1,r2,r3,field('Description',ds),field('Tags (comma separated)',tg),pb,fm].forEach(function(x){F.appendChild(x)});
+    A[1].appendChild(F);root.appendChild(A[0]);
+    var B=sect('Your jobs'),stats=h('div','jstats'),list=h('div','jlist');B[1].appendChild(stats);B[1].appendChild(list);root.appendChild(B[0]);
+    var jobs=[],names={};
+    function sr(){var ap=0;jobs.forEach(function(j){ap+=(j.crewlio_applications||[]).length});
+      return [[jobs.filter(function(j){return j.status==='open'}).length,'Open jobs'],[jobs.length,'Total posted'],[ap,'Applicants']]}
+    function draw(){
+      stat(stats,sr());list.textContent='';
+      if(!jobs.length){var e=h('div','jempty');e.appendChild(h('h3',null,'You have not posted a job yet'));e.appendChild(h('p',null,'Use the form above. Your job appears for every freelancer right away.'));list.appendChild(e);return}
+      jobs.forEach(function(j){
+        var apps=j.crewlio_applications||[],det=h('div','dapps');det.hidden=true;
+        det.appendChild(h('h4',null,'Applicants'));
+        var ul=h('ul');if(!apps.length)ul.appendChild(h('li',null,'No applicants yet.'));
+        apps.forEach(function(a){var li=h('li');li.appendChild(h('span',null,names[a.freelancer_id]||'Freelancer'));li.appendChild(h('span',null,ago(a.created_at)));ul.appendChild(li)});det.appendChild(ul);
+        var va=h('button','btn sm','Applicants ('+apps.length+')');va.type='button';va.setAttribute('aria-expanded','false');
+        va.addEventListener('click',function(){det.hidden=!det.hidden;va.setAttribute('aria-expanded',String(!det.hidden))});
+        var tg2=h('button','btn sm',j.status==='open'?'Close':'Reopen');tg2.type='button';
+        tg2.addEventListener('click',function(){sb.from('crewlio_jobs').update({status:j.status==='open'?'closed':'open'}).eq('id',j.id).then(function(r){if(r.error)alert(r.error.message);else load()})});
+        var dl=h('button','btn sm danger','Delete');dl.type='button';
+        dl.addEventListener('click',function(){if(confirm('Delete "'+j.title+'" and its applications?'))sb.from('crewlio_jobs').delete().eq('id',j.id).then(function(r){if(r.error)alert(r.error.message);else load()})});
+        list.appendChild(card(j,{acts:[va,tg2,dl],after:det,meta:apps.length+(apps.length===1?' applicant':' applicants')}))})}
+    function load(){
+      sb.from('crewlio_jobs').select('*, crewlio_applications(id,freelancer_id,created_at)').eq('employer_id',user.id).order('created_at',{ascending:false}).then(function(r){
+        if(r.error){list.textContent='';list.appendChild(h('p','msg','Could not load jobs: '+r.error.message));return}
+        jobs=r.data||[];var ids={};jobs.forEach(function(j){(j.crewlio_applications||[]).forEach(function(a){ids[a.freelancer_id]=1})});
+        var arr=Object.keys(ids);
+        if(!arr.length){draw();return}
+        sb.from('crewlio_profiles').select('id,full_name').in('id',arr).then(function(p){(p.data||[]).forEach(function(x){names[x.id]=x.full_name||'Freelancer'});draw()})})}
+    F.addEventListener('submit',function(e){
+      e.preventDefault();fm.className='msg';
+      var a=parseFloat(p1.value),b=parseFloat(p2.value),hrs=parseInt(hr.value,10),d=ds.value.trim();
+      if(ti.value.trim().length<3)return fm.textContent='Job title needs at least 3 characters.';
+      if(co.value.trim().length<2)return fm.textContent='Enter your company name.';
+      if(isNaN(a)||isNaN(b)||a<0||b<a)return fm.textContent='Enter a pay range where the top is at least the bottom.';
+      if(isNaN(hrs)||hrs<1||hrs>80)return fm.textContent='Hours per week must be between 1 and 80.';
+      if(d.length<10)return fm.textContent='Describe the job in at least 10 characters.';
+      pb.disabled=true;fm.textContent='Posting\u2026';
+      sb.from('crewlio_jobs').insert({title:ti.value.trim(),company:co.value.trim(),category:ca.value,job_type:ty.value,level:lv.value,hours_per_week:hrs,timezone:tz.value.trim()||null,pay_min:a,pay_max:b,description:d,
+        tags:tg.value.split(',').map(function(x){return x.trim()}).filter(Boolean)}).then(function(r){
+        pb.disabled=false;
+        if(r.error){fm.textContent='Could not post: '+r.error.message;return}
+        F.reset();fm.className='msg ok';fm.textContent='Job posted. Freelancers can see it now.';load()})});
+    load();
+  }
+
+  /* ---------- Google sign-in ---------- */
   btn.addEventListener('click',function(){
     if(!sb){say('Could not load the sign-in service. Check your connection and try again.');return}
     if(location.protocol==='file:'){say('Google sign-in needs the site to be hosted at a web address. It does not work when the file is opened from your computer.');return}
     btn.disabled=true;say('Checking sign-in settings\u2026');
-    try{localStorage.setItem('crewlio_role',role())}catch(e){}
     fetch(SB_URL+'/auth/v1/settings',{headers:{apikey:SB_KEY}}).then(function(r){return r.json()}).catch(function(){return null}).then(function(s){
       if(s&&s.external&&s.external.google===false){btn.disabled=false;say('Google sign-in is not enabled yet. Turn on the Google provider in the Supabase dashboard.');return}
       say('Opening Google\u2026');
