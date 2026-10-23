@@ -365,6 +365,12 @@ header{scroll-margin-top:0}
 .gbtn:hover{background:#F8F9FA;box-shadow:0 1px 3px rgba(60,64,67,.3)}.gbtn:disabled{opacity:.6;cursor:wait}
 .gl{flex:none;display:block}
 .or{display:flex;align-items:center;gap:12px;color:var(--muted);font-size:.85rem}.or::before,.or::after{content:"";flex:1;height:1px;background:var(--line)}
+.account{gap:18px}.acc-top{display:flex;align-items:center;gap:16px}.acc-top h3{font-size:1.15rem}.acc-top .msg{min-height:0}
+.acc-av{width:56px;height:56px;border-radius:2px;background:var(--accent);color:#fff;display:grid;place-items:center;font:700 1.2rem var(--font-display);overflow:hidden;flex:none}
+.acc-av img{width:100%;height:100%;object-fit:cover;display:block}
+.acc-dl{margin:0;border-top:1px solid var(--line)}.acc-dl div{display:grid;grid-template-columns:130px 1fr;gap:12px;padding:11px 0;border-bottom:1px solid var(--line);font-size:.93rem}
+.acc-dl dt{font-weight:600}.acc-dl dd{margin:0;color:var(--muted)}.acc-act{display:flex;gap:10px;flex-wrap:wrap}
+.account[hidden]{display:none}
 </style>
 
 <a class="skip" href="#top" onclick="event.preventDefault();var m=document.getElementById('top');m.setAttribute('tabindex','-1');m.focus()">Skip to main content</a>
@@ -676,6 +682,11 @@ header{scroll-margin-top:0}
         <button class="btn primary" type="submit" style="justify-content:center">Continue</button>
         <p class="msg" id="msg" role="status" aria-live="polite">Layout only. Sign-in connects when the database is added.</p>
       </form>
+      <div class="form account" id="account" hidden>
+        <div class="acc-top"><span class="acc-av" id="acc-av"></span><div><h3 id="acc-name"></h3><p class="msg" id="acc-email"></p></div></div>
+        <dl class="acc-dl"><div><dt>Account type</dt><dd id="acc-role"></dd></div><div><dt>Signed in with</dt><dd>Google</dd></div></dl>
+        <div class="acc-act"><a class="btn primary" id="acc-go" href="#jobs">Browse jobs</a><button type="button" class="btn" id="acc-out">Log out</button></div>
+      </div>
     </div>
   </div>
 </div>
@@ -925,37 +936,66 @@ window.addEventListener('load',function(){
   render();
 })();
 </script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script>
-/* Google sign-in. Paste your OAuth client ID below (Google Cloud Console > Credentials > OAuth client ID > Web application)
-   and add this site's address under "Authorized JavaScript origins". Google sign-in does not work from a file:// address. */
+/* Supabase Auth with Google. The publishable key is designed to be public; never put a secret or service_role key here.
+   Supabase dashboard setup: Authentication > Sign In / Providers > Google (enable, add Google client ID and secret),
+   and Authentication > URL Configuration > add this site's address to Redirect URLs. */
 (function(){
-  var GOOGLE_CLIENT_ID='';
-  var btn=document.getElementById('gbtn'),msg=document.getElementById('msg');
-  if(!btn)return;
+  var SB_URL='https://acxrobzulaswsubfoghg.supabase.co',SB_KEY='sb_publishable_3Ehkqe8QtPVJQoh4FCZIVg_m2f8SOTD';
+  var $=function(id){return document.getElementById(id)};
+  var btn=$('gbtn'),msg=$('msg'),sb=null,cta=document.querySelectorAll('.nav-cta a');
   function say(t,ok){msg.textContent=t;msg.className='msg'+(ok?' ok':'')}
-  function load(cb){
-    if(window.google&&google.accounts&&google.accounts.oauth2)return cb();
-    var s=document.createElement('script');s.src='https://accounts.google.com/gsi/client';s.async=true;
-    s.onload=cb;s.onerror=function(){btn.disabled=false;say('Could not reach Google. Check your connection and try again.')};
-    document.head.appendChild(s);
+  function role(){var b=document.querySelector('#auth .switch [aria-pressed="true"]');return b?b.getAttribute('data-r'):'Freelancer'}
+  if(window.supabase&&supabase.createClient){
+    sb=supabase.createClient(SB_URL,SB_KEY,{auth:{flowType:'pkce',detectSessionInUrl:true,persistSession:true,autoRefreshToken:true}});
+  }
+  /* reflect signed-in state across the page */
+  function ui(session){
+    var u=session&&session.user,logIn=cta[0],sign=cta[1];
+    $('auth').hidden=!!u;$('account').hidden=!u;
+    if(u){
+      var m=u.user_metadata||{},name=m.full_name||m.name||u.email||'Your account';
+      $('acc-name').textContent=name;$('acc-email').textContent=u.email||'';$('acc-role').textContent=m.role||'Freelancer';
+      var av=$('acc-av');av.textContent='';
+      if(m.avatar_url){var im=new Image();im.src=m.avatar_url;im.alt='';im.referrerPolicy='no-referrer';im.onerror=function(){av.textContent=name[0].toUpperCase()};av.appendChild(im)}else av.textContent=name[0].toUpperCase();
+      $('acc-go').textContent=(m.role==='Employer')?'Find a VA':'Browse jobs';$('acc-go').setAttribute('href',(m.role==='Employer')?'#find-a-va':'#jobs');
+      if(logIn){logIn.textContent=name.split(' ')[0];logIn.setAttribute('href','#login')}
+      if(sign){sign.textContent='Log out';sign.setAttribute('href','#login');sign.onclick=function(e){e.preventDefault();out()}}
+    }else{
+      if(logIn){logIn.textContent='Log in';logIn.setAttribute('href','#login')}
+      if(sign){sign.textContent='Sign up';sign.setAttribute('href','#login');sign.onclick=null}
+    }
+  }
+  function out(){if(sb)sb.auth.signOut()}
+  $('acc-out').addEventListener('click',out);
+  if(sb){
+    /* handle the return from Google: error in the URL, or a ?code that supabase-js exchanges for a session */
+    var q=new URLSearchParams(location.search),err=q.get('error_description');
+    sb.auth.getSession().then(function(r){
+      ui(r.data.session);
+      if(q.get('code')||err){history.replaceState(null,'',location.pathname+(location.hash||''));if(err){location.hash='#login';say(err)}}
+    });
+    sb.auth.onAuthStateChange(function(ev,session){
+      ui(session);
+      if(ev==='SIGNED_IN'&&session){
+        var want=localStorage.getItem('crewlio_role');
+        if(want&&!(session.user.user_metadata||{}).role){setTimeout(function(){sb.auth.updateUser({data:{role:want}}).then(function(x){if(x.data&&x.data.user)ui({user:x.data.user})})},0)}
+        try{localStorage.removeItem('crewlio_role')}catch(e){}
+        if(!location.hash||location.hash==='#login'||location.hash==='#home')location.hash='#login';
+      }
+    });
   }
   btn.addEventListener('click',function(){
-    if(!GOOGLE_CLIENT_ID){say('Google sign-in is set up in the design. Add your Google client ID in the page to turn it on.');return}
-    btn.disabled=true;say('Opening Google\u2026');
-    load(function(){
-      var tc=google.accounts.oauth2.initTokenClient({
-        client_id:GOOGLE_CLIENT_ID,scope:'openid email profile',
-        callback:function(r){
-          btn.disabled=false;
-          if(!r||!r.access_token){say('Google sign-in was cancelled.');return}
-          fetch('https://www.googleapis.com/oauth2/v3/userinfo',{headers:{Authorization:'Bearer '+r.access_token}})
-            .then(function(x){return x.json()})
-            .then(function(u){say('Signed in with Google as '+(u.email||'your account')+'. Connect the database to save the account.',true)})
-            .catch(function(){say('Signed in, but we could not read your Google profile.')});
-        },
-        error_callback:function(){btn.disabled=false;say('Google sign-in was cancelled.')}
-      });
-      tc.requestAccessToken();
+    if(!sb){say('Could not load the sign-in service. Check your connection and try again.');return}
+    if(location.protocol==='file:'){say('Google sign-in needs the site to be hosted at a web address. It does not work when the file is opened from your computer.');return}
+    btn.disabled=true;say('Checking sign-in settings\u2026');
+    try{localStorage.setItem('crewlio_role',role())}catch(e){}
+    fetch(SB_URL+'/auth/v1/settings',{headers:{apikey:SB_KEY}}).then(function(r){return r.json()}).catch(function(){return null}).then(function(s){
+      if(s&&s.external&&s.external.google===false){btn.disabled=false;say('Google sign-in is not enabled yet. Turn on the Google provider in the Supabase dashboard.');return}
+      say('Opening Google\u2026');
+      sb.auth.signInWithOAuth({provider:'google',options:{redirectTo:location.origin+location.pathname,queryParams:{prompt:'select_account'}}})
+        .then(function(r){if(r.error){btn.disabled=false;say(r.error.message)}});
     });
   });
 })();
